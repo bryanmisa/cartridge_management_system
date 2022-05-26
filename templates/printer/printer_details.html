@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+        <h2>{{printer_detail.name}}</h2>
+        
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+                <th class="bg-info" scope="col">Asset Tag</th>
+                <th class="bg-info" scope="col">Serial Number</th>
+                <th class="bg-info" scope="col">Printer Model</th>
+                <th class="bg-info" scope="col">Make</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td class="bg-success">{{printer_detail.asset_tag}}</td>
+                <td class="bg-success">{{printer_detail.serial_number}}</td>
+                <td class="bg-success">{{printer_detail.printer_model}}</td>
+                <td class="bg-success">{{printer_detail.make}}</td>
+            </tr>
+          </tbody>
+
+        <hr>
+        <h4>Printer Details</h4>
+        <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">Cartridge Name</th>
+                <th scope="col">Color</th>
+                <th scope="col">Cartridge Type</th>
+                <th scope="col">Product Number</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <h4>Installed Cartridges</h4>
+            <tbody>
+              <tr>
+                {% for cartridge in cartridges %}
+                <td scope="row">{{cartridge.name}}</td>
+                <td>{{cartridge.cart_prod_no.color}}</td>
+                <td>{{cartridge.cart_prod_no.cartridge_type}}</td>
+                <td>{{cartridge.cart_prod_no}}</td>
+                <td>{{cartridge.status}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          
+        
+{% endblock content %}
+
+
+

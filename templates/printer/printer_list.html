@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<!-- this form is filtering the Instock of Cartridges-->
+
+<h1>Search Printer</h1>
+
+<form method="get">
+
+  {{ printer_filter.form|crispy }}
+
+  <button class="btn btn-primary" type="submit">Search</button>
+
+</form>
+
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Location</th>
+        <th scope="col">Model</th>
+        <th scope="col">Asset Tag</th>
+        <th scope="col">Serial Number</th>
+        <th scope="col">Make</th>
+        <th scope="col">Owned by</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <br>
+    <h2>List of Printers</h2>
+    <tbody>
+        {% for printer in printers %}
+            <tr>
+                <th scope="row"> <a href="{% url 'printer_details' printer.id %}"> {{printer.name}}</a></th>
+                <td>{{printer.location}}</td>
+                <td>{{printer.printer_model}}</td>
+                <td>{{printer.asset_tag}}</td>
+                <td>{{printer.serial_number}}</td>
+                <td>{{printer.make}}</td>
+                <td>{{printer.owned_by}}</td>
+                <td>
+                  {% if printer.status == "In Stock" %}
+                  <a href="{% url 'deploy_printer' printer.id %} "><button type="button" class="btn btn-danger">Deploy</button></a>
+                  {% endif %}
+                  <a href="{% url 'printer_update' printer.id %}"> <button type="button" class="btn btn-info">Update Details</button> </a>
+                </td> 
+               
+            </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+<!-- Printer Pagination | Displays 10 printers per page-->
+  {% if printers.has_other_pages %}
+  <nav>
+    <ul class="pagination justify-content-center">
+      {% if printers.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ printers.previous_page_number }}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+            <span class="page-link" aria-hidden="true">&laquo;</span>
+        </li>
+      {% endif %}
+
+      {% for p in printers.paginator.page_range %}
+        {% if printers.number == p %}
+          <li class="page-item"><a class="page-link" style="color: red;" href="#">{{ p }}</a></li>
+        {% else %}
+          <li class="page-item"><a class="page-link" href="?page={{ p }}">{{ p }}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if printers.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ printers.next_page_number }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link" aria-hidden="true">&raquo;</span>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+    
+{% endblock content %}
+
+

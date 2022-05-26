@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %} 
+
+{% block content %}
+
+    <form action="" method="post">
+        {% csrf_token %}
+        
+        {{form|crispy}}
+        
+        <input class= "btn btn-info" type="submit" value="Submit">
+
+    </form>
+
+<br>
+<a href="{% url 'list_make' %}"><button class="btn btn-primary">Back to the List</button></a>
+{% endblock content %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+    {{ form.media.css }}
+    <h1>Printer</h1>
+    <form style="font-size:20px" action="" method="post"> 
+        {% csrf_token %}
+        <!-- Fix this form with indvidual fields-->
+        {{form.as_p}}
+        <input type="submit" value="Submit">
+    </form>
+
+    <script src="{% static 'jquery/jquery.min.js' %}"></script>
+    {{ form.media.js }}
+    
+    {% comment %} <!-- This Jquery has to run first to make the select2 scripts work -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    
+    <script>
+        $(document).ready(function() {
+            $('#id_location').select2();
+        });
+        $(document).ready(function() {
+            $('#id_printer_model').select2();
+        });
+        $(document).ready(function() {
+            $('#id_make').select2();
+        });
+        $(document).ready(function() {
+            $('#id_owned_by').select2();
+        });
+        
+    
+    </script>          {% endcomment %}
+
+{% endblock content %}
+

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h1>Search Location</h1>
+
+<form method="get">
+
+  {{ locations.form|crispy }}
+
+  <button class="btn btn-primary" type="submit">Search</button>
+
+</form>
+
+<br>
+
+<h2>Locations List</h2>
+
+
+
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Update</th>
+        <th scope="col">Delete</th>
+
+      </tr>
+    </thead>
+    <tbody>
+        {% for location in locations.qs %}
+        <tr>
+            <th scope="row">{{location.name}}</th>
+            <td><a href="{% url 'update_location' location.id %}"><button type="button" class="btn btn-info">Update</button></td></a>
+            <td><a href="{% url 'delete_location' location.id %}"><button type="button" class="btn btn-danger">Delete</button></td></a>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    
+<nav aria-label="Page navigation">
+    {% if is_paginated %}
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+        <a class="page-link" href="?page={{page_obj.previous_page_number}}">&laquo;</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+        <a class="page-link" href="#">&laquo;</a>
+        </li>
+        {% endif %} {% for i in paginator.page_range %} {% if page_obj.number == i %}
+        <li class="page-item"><a class="page-link active">{{ i }}</a></li>
+        {% else %}
+        <li class="page-item">
+        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+        </li>
+        {% endif %} {% endfor %} {% if page_obj.has_next %}
+        <li class="page-item">
+        <a href="?page={{page_obj.next_page_number}}" class="page-link">&raquo;</a>
+        </li>
+        {% else %}
+            <li class="page-item disabled">
+            <a class="page-link">&raquo;</a>
+            </li>
+        {% endif %}
+    </ul>
+    {% endif %}
+</nav>
+{% endblock content %}

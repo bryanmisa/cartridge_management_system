@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<!-- This form is filtering the installed through cartridges -->
+
+<form method="get">
+
+  {{cartridge_filter.form | crispy }}
+
+  <button class="btn btn-primary" type="submit">Search</button>
+
+</form>
+
+
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Status</th>
+        <th scope="col">Installed Printer to</th>
+        <th scope="col">Printer Model</th>
+        <th scope="col">Cartridge Product No.</th>
+        <th scope="col">Cartridge Installed Date</th>
+        <th scope="col">Action</th>
+
+      </tr>
+    </thead>
+    <tbody>
+
+        {% for cartridge in cartridges %}
+            <tr>
+                <th scope="row">{{cartridge.name}}</th>
+                <td>{{cartridge.status}}</td>
+                <td>{{cartridge.printer.name}}</td>
+                <td>{{cartridge.printer_model}}</td>
+                <td>{{cartridge.cart_prod_no}}</td>
+                <td>{{cartridge.installed_date}}</td>
+                <td><a class="btn btn-warning" href="">Dispose</a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- pagination pages for cartridges. this will list 10 items per page-->
+  {% if cartridges.has_other_pages %}
+  <nav>
+    <ul class="pagination justify-content-center">
+      {% if cartridges.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ cartridges.previous_page_number }}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+            <span class="page-link" aria-hidden="true">&laquo;</span>
+        </li>
+      {% endif %}
+
+      {% for p in cartridges.paginator.page_range %}
+        {% if cartridges.number == p %}
+          <li class="page-item"><a class="page-link" style="color: red;" href="#">{{ p }}</a></li>
+        {% else %}
+          <li class="page-item"><a class="page-link" href="?page={{ p }}">{{ p }}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if cartridges.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ cartridges.next_page_number }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link" aria-hidden="true">&raquo;</span>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+    
+
+{% endblock content %}
