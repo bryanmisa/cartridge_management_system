@@ -21,5 +21,22 @@
     </div>
 </div>
 
+<div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
+    <div class="card-header">Cartridges </div>
+    <div class="card-body">
+      <h5 class="card-title">Cartridges that is out-of-stock</h5>
+      <p class="card-text">
+        
+        {% for cartridge in cartridges %}
+        
+         {% comment %}{{cartridge.color}}
+        {{cartridge.cartridge_type}} {% endcomment %}
+        {% if cartridge.number_of_cartridges == 0 %}
+            <p>{{cartridge.name}} | No Stock</p>
+        {% endif %}
+        {% endfor %}
+    </p>
+    </div>
+</div>
 
 {% endblock content %}
