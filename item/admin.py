@@ -9,6 +9,7 @@ item_models = [Location,
                CartridgeProductNumber,
                Make,
                Cartridge,
-               Printer]
+               Printer,
+               Vendor,]
 
 admin.site.register(item_models)

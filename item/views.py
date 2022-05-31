@@ -1,5 +1,6 @@
 from itertools import count
 from msilib.schema import ListView
+from django import views
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count, Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -9,7 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import (ListView,
                                   DeleteView,
                                   UpdateView,
-                                  CreateView)
+                                  CreateView,
+                                  DetailView,)
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.urls import reverse_lazy
@@ -423,4 +425,45 @@ class MakeCreateView(LoginRequiredMixin, CreateView):
     template_name = "make/form_make.html"
     success_url = reverse_lazy('list_make')
 
+# Vendor Views
 
+class VendorListView(LoginRequiredMixin, ListView):
+    model = Vendor
+    template_name = 'vendor/list_vendor.html'
+    context_object_name =  'vendors'
+    paginate_by: 20
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        filter = VendorFilter(self.request.GET, queryset)
+        return filter.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+        filter = VendorFilter(self.request.GET, queryset)
+        context["vendors"] = filter
+        return context
+
+class VendorUpdateView(LoginRequiredMixin, UpdateView):
+    model = Vendor
+    fields = '__all__'
+    template_name ='vendor/form_vendor.html'
+    success_url =  reverse_lazy('list_vendor')
+
+class VendorDeleteView(LoginRequiredMixin, DeleteView):
+    model = Vendor
+    template_name = "vendor/delete_vendor.html"
+    success_url = reverse_lazy('list_vendor')
+
+class VendorCreateView(LoginRequiredMixin, CreateView):
+    model = Vendor
+    fields = '__all__'
+    template_name = "vendor/form_vendor.html"
+    success_url = reverse_lazy('list_vendor')
+
+class VendorDetailView(LoginRequiredMixin, DetailView):
+    model = Vendor
+    fields = '__all__'
+    template_name = "vendor/details_vendor.html"
+    success_url = reverse_lazy('list_vendor')

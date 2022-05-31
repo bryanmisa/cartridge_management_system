@@ -56,3 +56,8 @@ class MakeFilter(django_filters.FilterSet):
      model = Make
      fields = ['name']
 
+class VendorFilter(django_filters.FilterSet):
+     name = django_filters.CharFilter(lookup_expr='icontains',label='Name')
+     model = Vendor
+     fields = ['company_name']
+
