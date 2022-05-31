@@ -1,5 +1,3 @@
-from telnetlib import STATUS
-from django.forms import DateInput
 from django_filters import *
 from item.widgets import *
 from item.models import *
@@ -8,7 +6,7 @@ import django_filters
 class CartridgeProductNumberFilter(django_filters.FilterSet):
     
     name = django_filters.CharFilter(lookup_expr='icontains')
-
+    name = django_filters.CharFilter(lookup_expr='icontains')
     class Meta :
         model = CartridgeProductNumber
         fields = ['name','color', 'cartridge_type' ]

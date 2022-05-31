@@ -1,38 +1,71 @@
 {% extends 'base.html' %} 
-
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 
+{% comment %} <div class="container"> 
+  <div class="row ">
+    <div class="col-md-12">
+
   {% if form.errors %}
-    <p>Your username and password didn't match. Please try again.</p>
+  <p>Your username and password didn't match. Please try again.</p>
   {% endif %}
 
   {% if next %}
     {% if user.is_authenticated %}
-      <p>Your account doesn't have access to this page. To proceed,
-      please login with an account that has access.</p>
+    <p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
     {% else %}
-      <p>Please login to see this page.</p>
+    <p>Please login to see this page.</p>
     {% endif %}
   {% endif %}
 
-  <form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <table>
-      <tr>
-        <td>{{ form.username.label_tag }}</td>
-        <td>{{ form.username }}</td>
-      </tr>
-      <tr>
-        <td>{{ form.password.label_tag }}</td>
-        <td>{{ form.password }}</td>
-      </tr>
-    </table>
-    <input type="submit" value="login" />
-    <input type="hidden" name="next" value="{{ next }}" />
-  </form>
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      {{form | crispy}}
+      <button type="submit">Login</button>
+    {# Assumes you setup the password_reset view in your URLconf #}
+    <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
 
-  {# Assumes you setup the password_reset view in your URLconf #}
-  <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+
+    </div>
+
+  </div>
+  
+
+</div> {% endcomment %}
+<div class="container">
+  <div class="top">
+    <h1 id="title" class="hidden"><span id="logo">Cartridge Management System</span></h1>
+  </div>
+  <div class="login-box animated fadeInUp">
+    <div class="box-header">
+      <h2>Log In</h2>
+    </div>
+    <div class="container">
+    {% if form.errors %}
+      <p>Your username and password didn't match. Please try again.</p>
+      {% endif %}
+      {% if next %}
+        {% if user.is_authenticated %}
+        <p>Your account doesn't have access to this page. To proceed,
+        please login with an account that has access.</p>
+        {% else %}
+        <p>Please login to see this page.</p>
+        {% endif %}
+      {% endif %}
+			<form class="login" method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+      {{form | crispy}}
+      <br>
+      <button type="submit">Sign In</button>
+    <br/>
+    </div>
+    <a href="#"><p class="small">Forgot your password?</p></a>
+  </div>
+</div>
+
+
 
 {% endblock %}

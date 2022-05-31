@@ -1,13 +1,20 @@
 from django.urls import path,include
-from django.contrib.auth import views as auth_views
+from django.contrib.auth.views import LoginView
 from . import views
 from item.views import *
+from item.forms import UserLoginForm
 
 
 urlpatterns = [
 
     # Login / Logout URLS
-
+    path(
+        'login/',
+        LoginView.as_view(
+            template_name="login.html",
+            authentication_form=UserLoginForm
+            ),
+        name='login'),
 
     # Hompage urls
     path('', views.dashboard, name='dashboard'),
@@ -26,7 +33,7 @@ urlpatterns = [
     # Cartridge URLS
     path('cartridge/list/instock', views.cartridge_list_instock, name='cartridge_list_instock'),
     path('cartridge/list/installed', views.cartridge_list_installed, name='cartridge_list_installed'),
-    path('cartridge/list/stocks', views.list_cartridge_stocks, name='list_cartridge_stocks'),
+    path('cartridge/list/stocks/outofstock', views.list_of_out_of_stock_cartridges, name='list_of_out_of_stock_cartridges'),
     path('cartridge/update/<int:id>', views.cartridge_update, name='cartridge_update'),
     path('cartridge/create', views.cartridge_create, name='cartridge_create'),
     path('cartridge/install/<str:id>', views.install_cartridge, name='install_cartridge'),

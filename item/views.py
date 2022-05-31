@@ -1,3 +1,4 @@
+from itertools import count
 from msilib.schema import ListView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count, Q
@@ -23,13 +24,15 @@ from item.filters import *
 # Home Page View
 @login_required
 def dashboard(request):
-
     cartridges = CartridgeProductNumber.objects.annotate(number_of_cartridges = 
                                                         Count('cart_prod_no',
-                                                        filter=Q(cart_prod_no__status='In Stock'))).order_by('name')[:11]
-
+                                                        filter=Q(cart_prod_no__status='In Stock'),distinct=True)
+                                                        ).order_by('name')[:11]  
+    printers = Printer.objects.all().filter(status='In Stock').order_by('name')[:11]
     context = {
-        'cartridges' : cartridges
+        'cartridges' : cartridges,
+        'printers' : printers,
+
     }
     return render(request, 'index.html', context)
 
@@ -181,6 +184,8 @@ def cartridge_list_instock(request):
     cartridge_filter = CartridgeFilter(request.GET, queryset = cartridges)
     cartridges = cartridge_filter.qs
     
+    
+    
     #Paginate Cartridges
     page = request.GET.get('page', 1)
     paginator = Paginator(cartridges, 10)
@@ -276,7 +281,7 @@ def install_cartridge(request, id):
 
 # Cartridge Stock List
 @login_required
-def list_cartridge_stocks(request):
+def list_of_out_of_stock_cartridges(request):
 
     cartridges = CartridgeProductNumber.objects.annotate(number_of_cartridges = 
                                                         Count('cart_prod_no',
@@ -302,7 +307,8 @@ def list_cartridge_stocks(request):
         'cartridges' : cartridges,
         'cartridge_filter' : cartridge_filter,
     }
-    return render(request, 'cartridge/cartridge_list_of_stocks.html', context)
+    return render(request, 'cartridge/cartridge_list_of_out_of_stocks.html', context)
+
 
 # CartridgeProductNo. Views
 

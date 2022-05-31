@@ -2,7 +2,8 @@ from django import forms
 from item.models import *
 from .widgets import DatePickerInput
 from django_select2 import forms as s2forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm,UsernameField
+
 
 
 # Widgets for Select2
@@ -96,3 +97,15 @@ class InstallCartridgeForm(forms.ModelForm):
             'installed_date' : DatePickerInput(attrs={'class':'form-control'}),
         }
 
+class UserLoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(UserLoginForm, self).__init__(*args, **kwargs)
+
+    username = UsernameField(widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': '', 'id': 'hello'}))
+    password = forms.CharField(widget=forms.PasswordInput(
+        attrs={
+            'class': 'form-control',
+            'placeholder': '',
+            'id': 'hi',
+        }))

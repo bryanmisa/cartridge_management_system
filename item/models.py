@@ -86,6 +86,12 @@ class Cartridge(Item):
                                      default='', related_name='cart_prod_no')
     installed_date = models.DateField(blank=True, null=True)          # this field will only show when installing the 
                                                                       # cartridge
+    
+    vendor = models.ForeignKey('Vendor', 
+                                on_delete=models.SET_NULL, 
+                                null=True, 
+                                blank=True)
+    
     class Meta:
         ordering = ['-updated_at']
 
@@ -120,7 +126,22 @@ class Printer(Item):
                             on_delete=models.SET_NULL, 
                             null=True, 
                             blank=True)
+    vendor = models.ForeignKey('Vendor', 
+                            on_delete=models.SET_NULL, 
+                            null=True, 
+                            blank=True)
     installed_date = models.DateField(blank=True, null=True)
 
     class Meta:
         ordering = ['-updated_at']
+
+class Vendor(models.Model):
+
+    company_name = models.CharField(max_length=100, 
+                                blank=True, 
+                                unique=True)
+    contact_person =  models.CharField(max_length=100)
+    company_contact_number = models.CharField(max_length=50)
+    notes_on_vendor = models.TextField()
+
+

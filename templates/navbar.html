@@ -1,105 +1,54 @@
-<nav id="sidebar">
+{% if user.is_authenticated %}
+<nav class="m-3 navbar navbar-expand-lg navbar-light text-white">
+    
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul id="rounded-border" class="navbar-nav mr-auto bg-primary ">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Cartridges
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'list_of_out_of_stock_cartridges' %}">Out of Stock of Cartridges</a>
+            <a class="dropdown-item" href="{% url 'cartridge_list_instock' %}">List of Cartridges InStock</a>
+            <a class="dropdown-item" href="{% url 'cartridge_list_installed' %}">List of Installed Cartridges</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'cartridge_create' %}">Add New Cartridge</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Printer
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'printer_list_instock' %}">List of Printers in Stock</a>
+            <a class="dropdown-item" href="{% url 'printer_list_deployed' %}">List of Installed Printers</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'printer_create' %}">Add New Printer</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Settings
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'list_location' %}">Locations</a>
+            <a class="dropdown-item" href="{% url 'list_make' %}">Make</a>
+            <a class="dropdown-item" href="{% url 'list_cartridge_product_no' %}">Cartridge Product Number</a>
+            <a class="dropdown-item" href="{% url 'list_printer_model' %}">Printer Model</a>
+            
+        
+          </div>
+        </li>
+      </ul>
+      
+      
+      <p id="rounded-border" class="bg-info"> Welcome Back! {{ user.get_username.capitalize }} | <a class="text-warning" href="{% url 'logout'%}?next={{request.path}}">Logout</a></p>
+      {% else %}
+      {% endif %}
 
-
-  <div class="p-4 pt-5">
-
-    {% if user.is_authenticated %}
-
-
-    <ul class="list-unstyled components mb-5">
-      <li>
-        <ul class="list-unstyled"> <a href="{% url 'dashboard' %}">DashBoard</a> </ul>
-      </li>
-      <li>
-        <a href="#PrinterSubmenu" data-toggle="collapse"  class="dropdown-toggle">Printer Section</a>
-        <ul class="list-unstyled" id="PrinterSubmenu"> 
-          <li>
-              <a href=" {% url 'printer_create' %} ">Add New Printer</a>
-          </li>
-          <li>
-              <a href="{% url 'printer_list_deployed' %}">List Deployed Printer</a>
-          </li>
-          <li>
-              <a href="{% url 'printer_list_instock' %}">List InStock Printer</a>
-          </li>
-          <li>
-            <a href="#PrinterModelSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Printer Model</a>
-            <ul class="list-unstyled" id="PrinterModelSubmenu">
-              <li>
-                <a href="{% url 'list_printer_model' %}">List Printer Models</a>
-              </li>
-              <li>
-                <a href="{% url 'create_printer_model' %}">Create Printer Model</a> 
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <a href="#CartridgeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Catridge Section</a>
-        <ul class="list-unstyled" id="CartridgeSubmenu">
-          <li>
-            <a href="{% url 'cartridge_create' %}">Add New Cartridge</a>
-          </li>
-          <li>
-            <a href="{% url 'list_cartridge_stocks' %}">List of Stock of Cartridges</a>
-          </li>
-          <li>
-              <a href=" {% url 'cartridge_list_instock' %} ">List InStock Cartridges</a>
-          </li>
-          <li>
-              <a href="{% url 'cartridge_list_installed' %}">List Installed Cartridges</a>
-          </li>
-          <li>
-            <a href="#CartridgeProdNoSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Catridge Product No.</a>
-            <ul class="list-unstyled" id="CartridgeProdNoSubmenu">
-              <li>
-                <a href="{% url 'list_cartridge_product_no' %}">List Cartridge Product Number</a>
-              </li>
-              <li>
-                <a href="{% url 'create_cartridge_product_no' %}">Create Catridge Produc Number</a>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <a href="#LocationSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Location Section</a>
-        <ul class="list-unstyled" id="LocationSubmenu">
-          <li>
-              <a href="{% url 'list_location' %}">List of Locations</a>
-          </li>
-          <li>
-              <a href="{% url 'create_location' %}">Create Location</a>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <a href="#MakeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Make  Section</a>
-        <ul class="list-unstyled" id="MakeSubmenu">
-          <li>
-              <a href="{% url 'list_make' %}">List of Make</a>
-          </li>
-          <li>
-              <a href="{% url 'create_make' %}">Create Make</a>
-          </li>
-        </ul>
-      </li>
-    </ul>
-
-    {% endif %}
-   
-
-
- </ul>
-
-  <div class="footer">
-    {% if user.is_authenticated %}
-    <p>Powered by Python and Django</p>
-    <p>Created by Bryan Misa</p>
-    {% endif %}
-  </div>
-
-  </div>
-
-</nav>
+    </div>
+  </nav>

@@ -3,6 +3,8 @@
 
 {% block content %}
 
+
+
 <h1>Search Location</h1>
 
 <form method="get">
@@ -14,10 +16,12 @@
 </form>
 
 <br>
+<br>
 
+<a class="btn btn-primary" href="{% url 'create_location' %} ">Create New Location</a>
+<br>
+<br>
 <h2>Locations List</h2>
-
-
 
 <table class="table table-hover">
     <thead>

@@ -37,7 +37,11 @@ INSTALLED_APPS = [
 
     # 3rd Party Modules
     'crispy_forms',
+    'crispy_bootstrap5',
     'django_select2',
+    'django_tables2',
+    'django_htmx',
+
 
     # Django Default App
     'django.contrib.admin',
@@ -137,7 +141,9 @@ SELECT2_CSS = "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/css/select2
 SELECT2_I18N_PATH = "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/js/i18n"
 
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 CACHES = {
     # … default cache config and others
