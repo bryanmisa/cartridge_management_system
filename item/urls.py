@@ -1,9 +1,8 @@
 from django.urls import path,include
 from django.contrib.auth.views import LoginView
-from . import views
 from item.views import *
 from item.forms import UserLoginForm
-
+from . import views
 
 urlpatterns = [
 
@@ -61,4 +60,11 @@ urlpatterns = [
     path('printer_model/create', PrinterModelCreateView.as_view(), name='create_printer_model'),
     path('printer_model/update/<int:pk>', PrinterModelUpdateView.as_view(), name='update_printer_model'),
     path('printer_model/delete/<int:pk>', PrinterModelDeleteView.as_view(), name='delete_printer_model'),
+
+    # Vendor URLS
+    path('vendor/list', VendorListView.as_view(), name='list_vendor'),
+    path('vendor/create', VendorCreateView.as_view(), name='create_vendor'),
+    path('vendor/update/<int:pk>', VendorUpdateView.as_view(), name='update_vendor'),
+    path('vendor/delete/<int:pk>', VendorDeleteView.as_view(), name='delete_vendor'),
+     path('vendor/details/<int:pk>', VendorDetailView.as_view(), name='detail_vendor'),
 ]

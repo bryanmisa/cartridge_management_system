@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+    <form action="" method="post">{% csrf_token %}
+        <h4>Are you sure you want this location ?</h4>
+        <h5>"{{ vendor.name }}"</h5>
+        <br>
+        <input class= "btn btn-danger" type="submit" value="Delete">
+
+    </form>
+
+<br>
+<br>
+<a href="{% url 'list_location' %}"><button class="btn btn-primary">Back to the List</button></a>
+
+
+{% endblock content %}

@@ -32,13 +32,18 @@ class LocationWidget(s2forms.ModelSelect2Widget):
         'name__icontains'
     ]
 
+class VendorWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        'company_name__icontains'
+    ]
+
 # Forms
 class PrinterForm(forms.ModelForm):
 
     class Meta:
 
         model = Printer
-        fields = ['name', 'asset_tag', 'serial_number', 'owned_by', 'location', 'printer_model', 'make']
+        fields = ['name', 'asset_tag', 'serial_number', 'owned_by', 'location', 'printer_model', 'make', 'vendor']
         labels = {
             'name': 'Printer',
             'asset_tag' : 'Asset Tag',  
@@ -46,6 +51,7 @@ class PrinterForm(forms.ModelForm):
             'location' : 'Located at', 
             'printer_model' : 'Printer Model', 
             'make' : 'Make',
+            'vendor' : 'Vendor',
         }
         
         widgets = {
@@ -57,6 +63,7 @@ class PrinterForm(forms.ModelForm):
             'location' : LocationWidget(attrs={'class':'form-control'}),
             'printer_model' : PrinterModelWidget(attrs={'class':'form-control'}),
             'make': MakeWidget(attrs={'class':'form-control',}),
+            'vendor' : VendorWidget(attrs={'class':'form-control',}),
         }
         
 class DeployPrinterForm(forms.ModelForm):
@@ -77,12 +84,13 @@ class CartridgeForm(forms.ModelForm):
     class Meta:
 
         model = Cartridge
-        fields = ['name', 'printer_model' ,'cart_prod_no', 'make']
+        fields = ['name', 'printer_model' ,'cart_prod_no', 'make', 'vendor']
         widgets = {
             'name' : forms.TextInput(attrs={'class':'form-control'}),
             'printer_model' : PrinterModelWidget(attrs={'class':'form-control'}),
             'cart_prod_no' : CartridgeProductNoWidget(attrs={'class':'form-control'}),
             'make' : MakeWidget(attrs={'class':'form-control'}),
+            'vendor' : VendorWidget(attrs={'class':'form-control',}),
         }
         
 class InstallCartridgeForm(forms.ModelForm):

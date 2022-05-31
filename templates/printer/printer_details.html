@@ -20,6 +20,7 @@
                 <td class="bg-success">{{printer_detail.serial_number}}</td>
                 <td class="bg-success">{{printer_detail.printer_model}}</td>
                 <td class="bg-success">{{printer_detail.make}}</td>
+                <td class="bg-success"> <a href="{% url 'detail_vendor' printer_detail.vendor.id %}"> {{printer_detail.vendor}}</a></td>
             </tr>
           </tbody>
 
