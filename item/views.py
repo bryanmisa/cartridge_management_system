@@ -268,11 +268,6 @@ class CartridgeCreateView(LoginRequiredMixin, CreateView):
     template_name = 'cartridge/cartridge_create_form.html'
     success_url = reverse_lazy('cartridge_list_instock')
 
-    def get(self, request, *args, **kwargs):
-        form = self.form_class(**self.get_form_kwargs())
-    
-        return render(request, self.template_name, {'form': form, 'work_form': work_form})
-
 @login_required
 def install_cartridge(request, id):
 
