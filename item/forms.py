@@ -80,11 +80,11 @@ class DeployPrinterForm(forms.ModelForm):
         }
 
 class CartridgeForm(forms.ModelForm):
-    
+    num_cartridges = forms.IntegerField()
     class Meta:
 
         model = Cartridge
-        fields = ['name', 'printer_model' ,'cart_prod_no', 'make', 'vendor']
+        fields = ['name', 'printer_model' ,'cart_prod_no', 'make', 'vendor',]
         widgets = {
             'name' : forms.TextInput(attrs={'class':'form-control'}),
             'printer_model' : PrinterModelWidget(attrs={'class':'form-control'}),

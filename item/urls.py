@@ -34,7 +34,8 @@ urlpatterns = [
     path('cartridge/list/installed', views.cartridge_list_installed, name='cartridge_list_installed'),
     path('cartridge/list/stocks/outofstock', views.list_of_out_of_stock_cartridges, name='list_of_out_of_stock_cartridges'),
     path('cartridge/update/<int:id>', views.cartridge_update, name='cartridge_update'),
-    path('cartridge/create', views.cartridge_create, name='cartridge_create'),
+    #path('cartridge/create', views.cartridge_create, name='cartridge_create'),
+    path('cartridge/create', CartridgeCreateView.as_view(), name='cartridge_create'),
     path('cartridge/install/<str:id>', views.install_cartridge, name='install_cartridge'),
 
     # Location URLS

@@ -13,6 +13,7 @@ from django.views.generic import (ListView,
                                   CreateView,
                                   DetailView,)
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 
 from django.urls import reverse_lazy
 from item.models import *
@@ -186,8 +187,6 @@ def cartridge_list_instock(request):
     cartridge_filter = CartridgeFilter(request.GET, queryset = cartridges)
     cartridges = cartridge_filter.qs
     
-    
-    
     #Paginate Cartridges
     page = request.GET.get('page', 1)
     paginator = Paginator(cartridges, 10)
@@ -248,18 +247,31 @@ def cartridge_update(request, id):
 
     return render(request, 'cartridge/cartridge_create_form.html', context) # render querysets on the HTML
 
-@login_required
-def cartridge_create(request):
-    context = {}
-    form = CartridgeForm(request.POST or None)
-    if request.method == "POST":
-        if form.is_valid():
-            form.save()
-            return redirect('cartridge_list_instock')
+# @login_required
+# def cartridge_create(request):
+#     context = {}
+#     form = CartridgeForm(request.POST or None)
+#     number_of_cartridges = request.POST.get('count_of_cartridges')
+#     if request.method == "POST":
+#         if form.is_valid():
+#             cartridges = form.save()
+            
+#             return redirect('cartridge_list_instock')
     
-    context['form'] = form
+#     context['form'] = form
 
-    return render(request, 'cartridge/cartridge_create_form.html', context)
+#     return render(request, 'cartridge/cartridge_create_form.html', context)
+
+class CartridgeCreateView(LoginRequiredMixin, CreateView):
+    model = Cartridge
+    form_class = CartridgeForm
+    template_name = 'cartridge/cartridge_create_form.html'
+    success_url = reverse_lazy('cartridge_list_instock')
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(**self.get_form_kwargs())
+    
+        return render(request, self.template_name, {'form': form, 'work_form': work_form})
 
 @login_required
 def install_cartridge(request, id):
@@ -340,7 +352,6 @@ class CartridgeProductNumberUpdateView(LoginRequiredMixin, UpdateView):
 
 class CartProdDeleteView(LoginRequiredMixin, DeleteView):
     model = CartridgeProductNumber
-
     template_name = 'cartridge/cartridge_product_no/del_cartridge_product_no.html'
     success_url = reverse_lazy('list_cartridge_product_no')
 

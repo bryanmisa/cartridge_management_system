@@ -6,7 +6,7 @@
 
     <form action="" method="post">{% csrf_token %}
         <h4>Are you sure you want this location ?</h4>
-        <h5>"{{ vendor.name }}"</h5>
+        <h5>"{{ vendor.company_name }}"</h5>
         <br>
         <input class= "btn btn-danger" type="submit" value="Delete">
 
@@ -14,7 +14,7 @@
 
 <br>
 <br>
-<a href="{% url 'list_location' %}"><button class="btn btn-primary">Back to the List</button></a>
+<a href="{% url 'list_vendor' %}"><button class="btn btn-primary">Back to the List</button></a>
 
 
 {% endblock content %}

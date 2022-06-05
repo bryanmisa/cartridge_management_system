@@ -6,7 +6,10 @@
     </button>
     
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul id="rounded-border" class="navbar-nav mr-auto bg-primary ">
+      <ul id="rounded-border" class="navbar-nav me-auto  bg-primary ">
+        <li class="nav-item">
+          <a class="nav-link active text-white" aria-current="page" href="{% url 'dashboard' %}">Home</a>
+        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Cartridges
@@ -26,7 +29,7 @@
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" href="{% url 'printer_list_instock' %}">List of Printers in Stock</a>
             <a class="dropdown-item" href="{% url 'printer_list_deployed' %}">List of Installed Printers</a>
-            <div class="dropdown-divider"></div>
+            
             <a class="dropdown-item" href="{% url 'printer_create' %}">Add New Printer</a>
           </div>
         </li>
@@ -35,10 +38,15 @@
             Settings
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'list_printer_model' %}">Printer Model</a>
+            <a class="dropdown-item" href="{% url 'list_cartridge_product_no' %}">Cartridge Product Number</a>
+            <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{% url 'list_location' %}">Locations</a>
             <a class="dropdown-item" href="{% url 'list_make' %}">Make</a>
-            <a class="dropdown-item" href="{% url 'list_cartridge_product_no' %}">Cartridge Product Number</a>
-            <a class="dropdown-item" href="{% url 'list_printer_model' %}">Printer Model</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'list_vendor' %}">Vendor</a>
+            
+            
             
         
           </div>
@@ -46,7 +54,7 @@
       </ul>
       
       
-      <p id="rounded-border" class="bg-info"> Welcome Back! {{ user.get_username.capitalize }} | <a class="text-warning" href="{% url 'logout'%}?next={{request.path}}">Logout</a></p>
+      <p id="rounded-border" class="bg-primary"> Welcome Back! {{ user.get_username.capitalize }} | <a class="text-warning" href="{% url 'logout'%}?next={{request.path}}">Logout</a></p>
       {% else %}
       {% endif %}
 
