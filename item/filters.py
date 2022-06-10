@@ -3,6 +3,10 @@ from item.widgets import *
 from item.models import *
 import django_filters
 
+"""
+Item Filters : These filters uses django-filters mnodules for searching items and also a
+"""
+
 class CartridgeProductNumberFilter(django_filters.FilterSet):
     
     name = django_filters.CharFilter(lookup_expr='icontains')
@@ -11,7 +15,19 @@ class CartridgeProductNumberFilter(django_filters.FilterSet):
         model = CartridgeProductNumber
         fields = ['name','color', 'cartridge_type' ]
 
-class CartridgeFilter(django_filters.FilterSet):
+class CartridgeInStockFilter(django_filters.FilterSet):
+
+    name = django_filters.CharFilter(lookup_expr='icontains')
+    printer = django_filters.CharFilter(lookup_expr='icontains',field_name='printer__name',label='Printer')
+    printer_model = django_filters.CharFilter(lookup_expr='icontains',field_name='printer_model__name',label='Printer Model')
+    make = django_filters.CharFilter(lookup_expr='icontains',field_name='make__name',label='Make')
+    cart_prod_no = django_filters.CharFilter(lookup_expr='icontains',field_name='cart_prod_no__name',label='Cartridge Product Number')
+
+    class Meta :
+        model = Cartridge
+        fields = ['name'  ,'printer', 'printer_model', 'cart_prod_no', 'make',]
+
+class CartridgeInstalledFilter(django_filters.FilterSet):
 
     name = django_filters.CharFilter(lookup_expr='icontains')
     printer = django_filters.CharFilter(lookup_expr='icontains',field_name='printer__name',label='Printer')

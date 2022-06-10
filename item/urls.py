@@ -37,6 +37,9 @@ urlpatterns = [
     #path('cartridge/create', views.cartridge_create, name='cartridge_create'),
     path('cartridge/create', CartridgeCreateView.as_view(), name='cartridge_create'),
     path('cartridge/install/<str:id>', views.install_cartridge, name='install_cartridge'),
+    path('cartridge/copy/<str:id>', views.copy_cartridge, name='copy_cartridge'),
+    path('vendor/details/<int:pk>', CartridgeDetailView.as_view(), name='cartridge_details'),
+
 
     # Location URLS
     path('item_location/list', LocationListView.as_view(), name='list_location'),
@@ -67,5 +70,5 @@ urlpatterns = [
     path('vendor/create', VendorCreateView.as_view(), name='create_vendor'),
     path('vendor/update/<int:pk>', VendorUpdateView.as_view(), name='update_vendor'),
     path('vendor/delete/<int:pk>', VendorDeleteView.as_view(), name='delete_vendor'),
-     path('vendor/details/<int:pk>', VendorDetailView.as_view(), name='detail_vendor'),
+    path('vendor/details/<int:pk>', VendorDetailView.as_view(), name='detail_vendor'),
 ]

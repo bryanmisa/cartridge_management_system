@@ -184,7 +184,7 @@ class PrinterModelCreateView(LoginRequiredMixin, CreateView):
 @login_required
 def cartridge_list_instock(request):
     cartridges = Cartridge.objects.all().filter(status='In Stock')
-    cartridge_filter = CartridgeFilter(request.GET, queryset = cartridges)
+    cartridge_filter = CartridgeInStockFilter(request.GET, queryset = cartridges)
     cartridges = cartridge_filter.qs
     
     #Paginate Cartridges
@@ -208,7 +208,7 @@ def cartridge_list_instock(request):
 @login_required
 def cartridge_list_installed(request):
     cartridges = Cartridge.objects.all().filter(status='Installed')
-    cartridge_filter = CartridgeFilter(request.GET, queryset = cartridges)
+    cartridge_filter = CartridgeInstalledFilter(request.GET, queryset = cartridges)
     cartridges = cartridge_filter.qs
     
     #Paginate Cartridges
@@ -269,6 +269,13 @@ class CartridgeCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('cartridge_list_instock')
 
 @login_required
+def copy_cartridge(request, id):
+    copy_cartridge= get_object_or_404(Cartridge, pk = id)
+    copy_cartridge.pk=None
+    copy_cartridge.save()
+    return redirect('cartridge_list_instock')
+
+@login_required
 def install_cartridge(request, id):
 
     data = get_object_or_404(Cartridge, pk = id)
@@ -318,6 +325,12 @@ def list_of_out_of_stock_cartridges(request):
     }
     return render(request, 'cartridge/cartridge_list_of_out_of_stocks.html', context)
 
+class CartridgeDetailView(LoginRequiredMixin, DetailView):
+    model = Cartridge
+    fields = '__all__'
+    context_object_name = 'cartridge'
+    template_name = "cartridge/cartridge_details.html"
+    success_url = reverse_lazy('cartridge_list_instock')
 
 # CartridgeProductNo. Views
 

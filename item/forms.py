@@ -80,7 +80,8 @@ class DeployPrinterForm(forms.ModelForm):
         }
 
 class CartridgeForm(forms.ModelForm):
-    num_cartridges = forms.IntegerField()
+    
+
     class Meta:
 
         model = Cartridge

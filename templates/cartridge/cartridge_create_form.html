@@ -10,34 +10,6 @@
     
     <form action="" method="post">
         {% csrf_token %}
-        {% comment %} <br/>
-        <h4>Enter the name of the Cartridge</h4>
-        <div>{{form.name}}</div>
-        <br/>
-        <h4>{{form.printer_model.label}}</h4>
-        <div class="#selectbox"  style= "font-size:20px" >{{form.printer_model}} </div>
-        <br/>
-        <h4>Enter the Product number of the Cartridge</h4>
-        <div class="#selectbox"  style= "font-size:20px">{{form.cart_prod_no}} </div>
-        <br/>
-        <h4>Select the Vendor of the Cartridge</h4>
-        <div class="#selectbox"  style= "font-size:20px">{{form.vendor}} </div>
-        <br/>
-        <h4>Select the Manufacturer of the Cartridge</h4>
-        <div class="#selectbox"  style= "font-size:20px">{{form.make}} </div>
-        <br/>
-        <h4>Number of items received</h4>
-        <select name="count_of_cartridges" id="count_of_cartridges">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="8">9</option>
-          </select> {% endcomment %}
           {{form.as_p}}
         <br>
         <input class="btn btn-primary" type="submit" value="Submit">

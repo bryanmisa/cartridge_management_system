@@ -4,6 +4,8 @@ from django.contrib import admin
 from item.models import *
 
 # Register your models here.
+
+# List of created Item Models
 item_models = [Location,
                PrinterModel,
                CartridgeProductNumber,
