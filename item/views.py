@@ -7,7 +7,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from django.views.generic import (ListView,
+from django.views.generic import (View,
+                                  ListView,
                                   DeleteView,
                                   UpdateView,
                                   CreateView,
@@ -30,14 +31,52 @@ def dashboard(request):
     cartridges = CartridgeProductNumber.objects.annotate(number_of_cartridges = 
                                                         Count('cart_prod_no',
                                                         filter=Q(cart_prod_no__status='In Stock'),distinct=True)
-                                                        ).order_by('name')[:11]  
-    printers = Printer.objects.all().filter(status='In Stock').order_by('name')[:11]
+                                                        ).order_by('updated_at')[:11]
+    #Paginate List of Stocks, 
+    page = request.GET.get('page', 1)
+    paginator = Paginator(cartridges, 10)
+
+    try:
+        cartridges = paginator.page(page) 
+    except PageNotAnInteger:
+        cartridges = paginator.page(1)
+    except EmptyPage:
+        cartridges = paginator.page(paginator.num_pages)
+
     context = {
         'cartridges' : cartridges,
-        'printers' : printers,
-
     }
+    
     return render(request, 'index.html', context)
+
+@login_required
+def list_of_out_of_stock_cartridges(request):
+
+    cartridges = CartridgeProductNumber.objects.annotate(number_of_cartridges = 
+                                                        Count('cart_prod_no',
+                                                        filter=Q(cart_prod_no__status='In Stock')))
+                                                        
+    cartridge_filter = CartridgeProductNumberFilter(request.GET, queryset = cartridges)
+    cartridges = cartridge_filter.qs.order_by('name')
+
+    #Paginate List of Stocks, 
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(cartridges, 10)
+
+    try:
+        cartridges = paginator.page(page) 
+    except PageNotAnInteger:
+        cartridges = paginator.page(1)
+    except EmptyPage:
+        cartridges = paginator.page(paginator.num_pages)
+    
+    # returning the querysets
+    context = {
+        'cartridges' : cartridges,
+        'cartridge_filter' : cartridge_filter,
+    }
+    return render(request, 'cartridge/cartridge_list_of_out_of_stocks.html', context)
 
 #### Printer Model Views
 @login_required
@@ -183,27 +222,49 @@ class PrinterModelCreateView(LoginRequiredMixin, CreateView):
 # ITEM CARTRIDGE VIEWS
 @login_required
 def cartridge_list_instock(request):
-    cartridges = Cartridge.objects.all().filter(status='In Stock')
-    cartridge_filter = CartridgeInStockFilter(request.GET, queryset = cartridges)
-    cartridges = cartridge_filter.qs
+    cartridges_list = Cartridge.objects.all().filter(status='In Stock')
+    cartridge_filter = CartridgeInStockFilter(request.GET, queryset = cartridges_list)
+    cartridges_qs = cartridge_filter.qs
     
     #Paginate Cartridges
     page = request.GET.get('page', 1)
-    paginator = Paginator(cartridges, 10)
+    paginator = Paginator(cartridges_qs, 10)
 
     try:
-        cartridges = paginator.page(page) 
+        cartridges_qs = paginator.page(page) 
     except PageNotAnInteger:
-        cartridges = paginator.page(1)
+        cartridges_qs = paginator.page(1)
     except EmptyPage:
-        cartridges = paginator.page(paginator.num_pages)
+        cartridges_qs = paginator.page(paginator.num_pages)
     
     # returning the querysets
     context = {
-        'cartridges' : cartridges,
+        'cartridges_qs' : cartridges_qs,
         'cartridge_filter' : cartridge_filter,
     }
     return render(request, 'cartridge/cartridge_instock_list.html', context)
+
+
+
+# class CartridgeListInStockView(LoginRequiredMixin, ListView):
+#     model = Cartridge
+#     context_object_name = 'cartridges'
+#     template_name = 'cartridge/cartridge_instock_list.html' 
+#     paginate_by = 10
+
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+        
+#         filter = CartridgeInStockFilter(self.request.GET, queryset)
+#         return filter.qs
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         queryset = self.get_queryset()
+#         filter = CartridgeInStockFilter(self.request.GET, queryset)
+#         context["cartridges"] = filter
+#         return context
+
 
 @login_required
 def cartridge_list_installed(request):
@@ -295,36 +356,6 @@ def install_cartridge(request, id):
 
     return render(request, 'cartridge/cartridge_install_form.html', context)
 
-# Cartridge Stock List
-@login_required
-def list_of_out_of_stock_cartridges(request):
-
-    cartridges = CartridgeProductNumber.objects.annotate(number_of_cartridges = 
-                                                        Count('cart_prod_no',
-                                                        filter=Q(cart_prod_no__status='In Stock')))
-                                                        
-    cartridge_filter = CartridgeProductNumberFilter(request.GET, queryset = cartridges)
-    cartridges = cartridge_filter.qs.order_by('name')
-
-    #Paginate List of Stocks, 
-
-    page = request.GET.get('page', 1)
-    paginator = Paginator(cartridges, 10)
-
-    try:
-        cartridges = paginator.page(page) 
-    except PageNotAnInteger:
-        cartridges = paginator.page(1)
-    except EmptyPage:
-        cartridges = paginator.page(paginator.num_pages)
-    
-    # returning the querysets
-    context = {
-        'cartridges' : cartridges,
-        'cartridge_filter' : cartridge_filter,
-    }
-    return render(request, 'cartridge/cartridge_list_of_out_of_stocks.html', context)
-
 class CartridgeDetailView(LoginRequiredMixin, DetailView):
     model = Cartridge
     fields = '__all__'
@@ -338,7 +369,7 @@ class CartridgeProductNumberListView(LoginRequiredMixin, ListView):
     model = CartridgeProductNumber
     template_name = 'cartridge/cartridge_product_no/list_cartridge_product_no.html'
     context_object_name = 'cartridge_product_nos'
-    paginate_by = 20
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = super().get_queryset()

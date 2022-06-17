@@ -1,6 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <p>Logged out!</p>
-  <a href="{% url 'login'%}">Click here to login again.</a>
+
+
+<div class="container">
+  <div class="top">
+    <h1 id="title" class="hidden"><span id="logo">Cartridge Management System</span></h1>
+  </div>
+  <div class="login-box animated fadeInUp">
+    <div class="box-header">
+      <h2>You have been Logged out!!
+      </h2>
+    </div>
+    <div class="container">
+    
+    <a href="{% url 'login'%}">Click here to login again.</a>
+    </div>
+</div>
+
 {% endblock %}

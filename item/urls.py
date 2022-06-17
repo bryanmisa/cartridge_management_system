@@ -31,6 +31,7 @@ urlpatterns = [
     
     # Cartridge URLS
     path('cartridge/list/instock', views.cartridge_list_instock, name='cartridge_list_instock'),
+    # path('cartridge/list/instock', CartridgeListInStockView.as_view(), name='cartridge_list_instock'),
     path('cartridge/list/installed', views.cartridge_list_installed, name='cartridge_list_installed'),
     path('cartridge/list/stocks/outofstock', views.list_of_out_of_stock_cartridges, name='list_of_out_of_stock_cartridges'),
     path('cartridge/update/<int:id>', views.cartridge_update, name='cartridge_update'),

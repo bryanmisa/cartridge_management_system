@@ -49,7 +49,7 @@
     <ul class="pagination justify-content-center">
       {% if cartridges.has_previous %}
         <li class="page-item">
-          <a class="page-link" href="?page={{ cartridges.previous_page_number }}" aria-label="Previous">
+          <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ cartridges.previous_page_number }}" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
@@ -63,13 +63,13 @@
         {% if cartridges.number == p %}
           <li class="page-item"><a class="page-link" style="color: red;" href="#">{{ p }}</a></li>
         {% else %}
-          <li class="page-item"><a class="page-link" href="?page={{ p }}">{{ p }}</a></li>
+          <li class="page-item"><a class="page-link" href="?{{ request.GET.urlencode }}&page={{ p }}">{{ p }}</a></li>
         {% endif %}
       {% endfor %}
 
       {% if cartridges.has_next %}
         <li class="page-item">
-          <a class="page-link" href="?page={{ cartridges.next_page_number }}" aria-label="Next">
+          <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ cartridges.next_page_number }}" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>

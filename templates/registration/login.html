@@ -4,37 +4,6 @@
 
 {% block content %}
 
-{% comment %} <div class="container"> 
-  <div class="row ">
-    <div class="col-md-12">
-
-  {% if form.errors %}
-  <p>Your username and password didn't match. Please try again.</p>
-  {% endif %}
-
-  {% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
-    {% endif %}
-  {% endif %}
-
-    <form method="post" action="{% url 'login' %}">
-      {% csrf_token %}
-      {{form | crispy}}
-      <button type="submit">Login</button>
-    {# Assumes you setup the password_reset view in your URLconf #}
-    <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
-
-
-    </div>
-
-  </div>
-  
-
-</div> {% endcomment %}
 <div class="container">
   <div class="top">
     <h1 id="title" class="hidden"><span id="logo">Cartridge Management System</span></h1>
@@ -66,23 +35,6 @@
   </div>
 </div>
 
-<script>
-	$(document).ready(function () {
-    	$('#logo').addClass('animated fadeInDown');
-    	$("input:text:visible:first").focus();
-	});
-	$('#username').focus(function() {
-		$('label[for="username"]').addClass('selected');
-	});
-	$('#username').blur(function() {
-		$('label[for="username"]').removeClass('selected');
-	});
-	$('#password').focus(function() {
-		$('label[for="password"]').addClass('selected');
-	});
-	$('#password').blur(function() {
-		$('label[for="password"]').removeClass('selected');
-	});
-</script>
+
 
 {% endblock %}

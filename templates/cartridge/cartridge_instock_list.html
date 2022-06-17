@@ -5,15 +5,15 @@
 {% block content %}
 
 
-<!-- this form is filtering the Instock of Cartridges-->
-<form method="get">
 
-    {{cartridge_filter.form | crispy}}
+  <!-- this form is filtering the Instock of Cartridges-->
+  <form method="get">
 
+    {{ cartridge_filter.form|crispy }}
+  
     <button class="btn btn-primary" type="submit">Search</button>
-
-</form>
-
+  
+  </form>
 
 <table class="table table-hover">
     <thead>
@@ -28,7 +28,7 @@
     </thead>
     <tbody>
 
-        {% for cartridge in cartridges %}
+        {% for cartridge in cartridges_qs %}
          
             <tr>
                 <th scope="row"> <a href="{% url 'cartridge_details' cartridge.id %}"> {{cartridge.name}}</a></th>
@@ -37,21 +37,38 @@
                 <td>{{cartridge.cart_prod_no}}</td>
                 <td><a href="{% url 'install_cartridge' cartridge.id %}"><button type="button" class="btn btn-info">Install</button></td></a>
                 <td><a href="{% url 'copy_cartridge' cartridge.id %}"><button type="button" class="btn btn-warning">Duplicate</button></td></a></td>
-                </tr
-            
-
+            </tr>
            
         {% endfor %}
     </tbody>
   </table>
 
+{% comment %} <div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?&page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <!-- https://stackoverflow.com/questions/52007038/pagination-using-listview-and-a-dynamic-filtered-queryset -->
+            <a href="?{{ request.GET.urlencode }}&page={{ page_obj.next_page_number }}">next</a>
+            <a href="?{{ request.GET.urlencode }}&page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>   {% endcomment %}
+
   <!-- pagination pages for cartridges. this will list 10 items per page-->
-  {% if cartridges.has_other_pages %}
+  {% if cartridges_qs.has_other_pages %}
   <nav>
     <ul class="pagination justify-content-center">
-      {% if cartridges.has_previous %}
+      {% if cartridges_qs.has_previous %}
         <li class="page-item">
-          <a class="page-link" href="?page={{ cartridges.previous_page_number }}" aria-label="Previous">
+          <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ cartridges_qs.previous_page_number }}" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
@@ -61,17 +78,17 @@
         </li>
       {% endif %}
 
-      {% for p in cartridges.paginator.page_range %}
-        {% if cartridges.number == p %}
+      {% for p in cartridges_qs.paginator.page_range %}
+        {% if cartridges_qs.number == p %}
           <li class="page-item"><a class="page-link" style="color: red;" href="#">{{ p }}</a></li>
         {% else %}
-          <li class="page-item"><a class="page-link" href="?page={{ p }}">{{ p }}</a></li>
+          <li class="page-item"><a class="page-link" href="?{{ request.GET.urlencode }}&page={{ p }}">{{ p }}</a></li>
         {% endif %}
       {% endfor %}
 
-      {% if cartridges.has_next %}
+      {% if cartridges_qs.has_next %}
         <li class="page-item">
-          <a class="page-link" href="?page={{ cartridges.next_page_number }}" aria-label="Next">
+          <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ cartridges_qs.next_page_number }}" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
@@ -83,17 +100,8 @@
     </ul>
   </nav>
   {% endif %}
+    
 
-  {% comment %} <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-  
-  <script>
 
-      $(document).ready(function() {
-          $('#id_printer_model').select2();
-      });
-  
-
-  </script> {% endcomment %}
 
 {% endblock content %}
