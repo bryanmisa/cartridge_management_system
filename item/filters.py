@@ -15,6 +15,7 @@ class CartridgeProductNumberFilter(django_filters.FilterSet):
         model = CartridgeProductNumber
         fields = ['name','color', 'cartridge_type' ]
 
+    
 class CartridgeInStockFilter(django_filters.FilterSet):
 
     name = django_filters.CharFilter(lookup_expr='icontains')

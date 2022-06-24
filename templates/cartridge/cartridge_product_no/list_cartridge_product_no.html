@@ -6,13 +6,20 @@
 
 <form method="get">
 
-    {{ cartridge_product_nos.form|crispy }}
-  
-    <button class="btn btn-primary" type="submit">Search</button>
-  
+    {{ cart_prod_list_filter.form |crispy }}
+    <br>
+    <center>
+        <button class="btn btn-primary" type="submit">Search</button> <a class="btn btn-primary" href="{% url 'create_cartridge_product_no' %}">Create New</a>
+    </center>
   </form>
 
+  <br>
+ 
+  <br>
 
+  <center>
+    <h2>Cartridge Product Number List</h2>
+  </center>
 <table class="table table-hover">
     <thead>
       <tr>
@@ -23,7 +30,7 @@
       </tr>
     </thead>
     <tbody>
-        {% for cartridge_product_no in cartridge_product_nos.qs %}
+        {% for cartridge_product_no in cart_prod_list_qs %}
         <tr>
             <th scope="row">{{cartridge_product_no.name}}</th>
             <td><a href="{% url 'update_cartridge_product_no' cartridge_product_no.id %}"><button type="button" class="btn btn-info">Update</button></td></a>
@@ -33,33 +40,43 @@
     </tbody>
 </table>
     
-<nav aria-label="Page navigation">
-    {% if is_paginated %}
-    <ul class="pagination">
-        {% if page_obj.has_previous %}
-        <li class="page-item">
-        <a class="page-link" href="?page={{page_obj.previous_page_number}}">&laquo;</a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-        <a class="page-link" href="#">&laquo;</a>
-        </li>
-        {% endif %} {% for i in paginator.page_range %} {% if page_obj.number == i %}
-        <li class="page-item"><a class="page-link active">{{ i }}</a></li>
-        {% else %}
-        <li class="page-item">
-        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
-        </li>
-        {% endif %} {% endfor %} {% if page_obj.has_next %}
-        <li class="page-item">
-        <a href="?page={{page_obj.next_page_number}}" class="page-link">&raquo;</a>
-        </li>
-        {% else %}
-            <li class="page-item disabled">
-            <a class="page-link">&raquo;</a>
-            </li>
-        {% endif %}
-    </ul>
+{% if cart_prod_list_qs.has_other_pages %}
+<nav>
+  <ul class="pagination justify-content-center">
+    {% if cart_prod_list_qs.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ cart_prod_list_qs.previous_page_number }}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+          <span class="page-link" aria-hidden="true">&laquo;</span>
+      </li>
     {% endif %}
+
+    {% for p in cart_prod_list_qs.paginator.page_range %}
+      {% if cart_prod_list_qs.number == p %}
+        <li class="page-item"><a class="page-link" style="color: red;" href="#">{{ p }}</a></li>
+      {% else %}
+        <li class="page-item"><a class="page-link" href="?{{ request.GET.urlencode }}&page={{ p }}">{{ p }}</a></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if cart_prod_list_qs.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ cart_prod_list_qs.next_page_number }}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link" aria-hidden="true">&raquo;</span>
+      </li>
+    {% endif %}
+  </ul>
 </nav>
+{% endif %}
+  
+
 {% endblock content %}

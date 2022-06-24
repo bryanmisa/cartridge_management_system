@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="row">
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title text-center">Out of Stock</h5>
+        {% for cartridge in cartridges %}
+          {% if cartridge.number_of_cartridges <= 0 %}
+              <p class="text-center">{{cartridge.name}} | <span class="fw-bold text-danger font-monospace"> {{cartridge.number_of_cartridges}}</span></p>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title text-center">Low Count Cartridges that is less than 3</h5>
+        {% for cartridge in cartridges %}
+      
+        {% if cartridge.number_of_cartridges >= 1 and cartridge.number_of_cartridges <= 3  %}
+    
+            <p class="text-center">{{cartridge.name}} | <span class="fw-bold text-warning font-monospace">{{cartridge.number_of_cartridges}}</span></p>
+    
+        {% endif %}
+    
+        {% endfor %}
+    
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

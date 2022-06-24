@@ -10,11 +10,13 @@
   <form method="get">
 
     {{ cartridge_filter.form|crispy }}
-  
-    <button class="btn btn-primary" type="submit">Search</button>
+    <br>
+    <center>
+      <button class="btn btn-primary" type="submit">Search</button>
+    </center>
   
   </form>
-
+<br>
 <table class="table table-hover">
     <thead>
       <tr>
@@ -31,36 +33,22 @@
         {% for cartridge in cartridges_qs %}
          
             <tr>
-                <th scope="row"> <a href="{% url 'cartridge_details' cartridge.id %}"> {{cartridge.name}}</a></th>
+                <th scope="row">
+  
+                  <a href="{% url 'cartridge_update' cartridge.id %}"> {{cartridge.name}}</a>
+                </th>
                 <td>{{cartridge.status}}</td>
                 <td>{{cartridge.printer_model}}</td>
                 <td>{{cartridge.cart_prod_no}}</td>
-                <td><a href="{% url 'install_cartridge' cartridge.id %}"><button type="button" class="btn btn-info">Install</button></td></a>
-                <td><a href="{% url 'copy_cartridge' cartridge.id %}"><button type="button" class="btn btn-warning">Duplicate</button></td></a></td>
+                <td>
+                  
+                  <a href="{% url 'install_cartridge' cartridge.id %}"><button type="button" class="btn btn-info">Install</button></a>
+                  <a href="{% url 'copy_cartridge' cartridge.id %}"><button type="button" class="btn btn-warning">Copy</button></a></td>
             </tr>
            
         {% endfor %}
     </tbody>
   </table>
-
-{% comment %} <div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?&page={{ page_obj.previous_page_number }}">previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
-
-        {% if page_obj.has_next %}
-            <!-- https://stackoverflow.com/questions/52007038/pagination-using-listview-and-a-dynamic-filtered-queryset -->
-            <a href="?{{ request.GET.urlencode }}&page={{ page_obj.next_page_number }}">next</a>
-            <a href="?{{ request.GET.urlencode }}&page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
-</div>   {% endcomment %}
 
   <!-- pagination pages for cartridges. this will list 10 items per page-->
   {% if cartridges_qs.has_other_pages %}

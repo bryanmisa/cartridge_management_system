@@ -21,10 +21,6 @@ from item.models import *
 from item.forms import *
 from item.filters import *
 
-
-# Create your views here.
-
-
 # Home Page View
 @login_required
 def dashboard(request):
@@ -47,17 +43,16 @@ def dashboard(request):
         'cartridges' : cartridges,
     }
     
-    return render(request, 'index.html', context)
+    return render(request, 'dashboard.html', context)
 
 @login_required
 def list_of_out_of_stock_cartridges(request):
 
     cartridges = CartridgeProductNumber.objects.annotate(number_of_cartridges = 
                                                         Count('cart_prod_no',
-                                                        filter=Q(cart_prod_no__status='In Stock')))
-                                                        
+                                                        filter=Q(cart_prod_no__status='In Stock'))).order_by('number_of_cartridges')
     cartridge_filter = CartridgeProductNumberFilter(request.GET, queryset = cartridges)
-    cartridges = cartridge_filter.qs.order_by('name')
+    cartridges = cartridge_filter.qs
 
     #Paginate List of Stocks, 
 
@@ -76,7 +71,7 @@ def list_of_out_of_stock_cartridges(request):
         'cartridges' : cartridges,
         'cartridge_filter' : cartridge_filter,
     }
-    return render(request, 'cartridge/cartridge_list_of_out_of_stocks.html', context)
+    return render(request, 'cartridge/cartridge_list_of_stock_cartridges.html', context)
 
 #### Printer Model Views
 @login_required
@@ -180,23 +175,29 @@ def deploy_printer(request, id):
 
 # Printer Model Views
 
-class PrinterModelListView(LoginRequiredMixin, ListView):
-    model = PrinterModel
-    template_name = 'printer/printer_model/list_printer_model.html'
-    context_object_name = 'printer_models'
-    paginate_by = 20
+@login_required
+def printer_model_list_view(request):
+    printer_model_list = PrinterModel.objects.all()
+    printer_model_filter = PrinterModelFilter(request.GET, queryset = printer_model_list)
+    printer_model_list_qs = printer_model_filter.qs
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        filter = PrinterModelFilter(self.request.GET, queryset)
-        return filter.qs
+    # Paginate Cartridge Product Number
+    page = request.GET.get('page', 1)
+    paginator = Paginator(printer_model_list_qs, 10) # Paginate by 10
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        queryset = self.get_queryset()
-        filter = PrinterModelFilter(self.request.GET, queryset)
-        context["printer_models"] = filter
-        return context
+    try:
+        printer_model_list_qs = paginator.page(page) 
+    except PageNotAnInteger:
+        printer_model_list_qs = paginator.page(1)
+    except EmptyPage:
+        printer_model_list_qs = paginator.page(paginator.num_pages)
+    
+    # returning the querysets
+    context = {
+        'printer_model_list_qs' : printer_model_list_qs,
+        'printer_model_filter' : printer_model_filter,
+    }
+    return render(request, 'printer/printer_model/list_printer_model.html', context)  
 
 class PrinterModelUpdateView(LoginRequiredMixin, UpdateView):
 
@@ -219,7 +220,7 @@ class PrinterModelCreateView(LoginRequiredMixin, CreateView):
     template_name = 'printer/printer_model/form_printer_model.html'
     success_url = reverse_lazy('list_printer_model')
  
-# ITEM CARTRIDGE VIEWS
+# Item Cartridge Views
 @login_required
 def cartridge_list_instock(request):
     cartridges_list = Cartridge.objects.all().filter(status='In Stock')
@@ -243,28 +244,6 @@ def cartridge_list_instock(request):
         'cartridge_filter' : cartridge_filter,
     }
     return render(request, 'cartridge/cartridge_instock_list.html', context)
-
-
-
-# class CartridgeListInStockView(LoginRequiredMixin, ListView):
-#     model = Cartridge
-#     context_object_name = 'cartridges'
-#     template_name = 'cartridge/cartridge_instock_list.html' 
-#     paginate_by = 10
-
-#     def get_queryset(self):
-#         queryset = super().get_queryset()
-        
-#         filter = CartridgeInStockFilter(self.request.GET, queryset)
-#         return filter.qs
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         queryset = self.get_queryset()
-#         filter = CartridgeInStockFilter(self.request.GET, queryset)
-#         context["cartridges"] = filter
-#         return context
-
 
 @login_required
 def cartridge_list_installed(request):
@@ -300,28 +279,13 @@ def cartridge_update(request, id):
         form = CartridgeForm(request.POST, instance=data)
         if form.is_valid():
             form.save()
-            return redirect('cartridge_list_installed')
+            return redirect('cartridge_list_instock')
 
     context = {
         'form' : form,
     }
 
     return render(request, 'cartridge/cartridge_create_form.html', context) # render querysets on the HTML
-
-# @login_required
-# def cartridge_create(request):
-#     context = {}
-#     form = CartridgeForm(request.POST or None)
-#     number_of_cartridges = request.POST.get('count_of_cartridges')
-#     if request.method == "POST":
-#         if form.is_valid():
-#             cartridges = form.save()
-            
-#             return redirect('cartridge_list_instock')
-    
-#     context['form'] = form
-
-#     return render(request, 'cartridge/cartridge_create_form.html', context)
 
 class CartridgeCreateView(LoginRequiredMixin, CreateView):
     model = Cartridge
@@ -363,25 +327,32 @@ class CartridgeDetailView(LoginRequiredMixin, DetailView):
     template_name = "cartridge/cartridge_details.html"
     success_url = reverse_lazy('cartridge_list_instock')
 
-# CartridgeProductNo. Views
 
-class CartridgeProductNumberListView(LoginRequiredMixin, ListView):
-    model = CartridgeProductNumber
-    template_name = 'cartridge/cartridge_product_no/list_cartridge_product_no.html'
-    context_object_name = 'cartridge_product_nos'
-    paginate_by = 10
+# Cartridge Product Number View
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        filter = PrinterModelFilter(self.request.GET, queryset)
-        return filter.qs
+@login_required
+def cartridge_product_number_list_view(request):
+    cart_prod_list = CartridgeProductNumber.objects.all()
+    cart_prod_list_filter = CartridgeProductNumberFilter(request.GET, queryset = cart_prod_list)
+    cart_prod_list_qs = cart_prod_list_filter.qs
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        queryset = self.get_queryset()
-        filter = PrinterModelFilter(self.request.GET, queryset)
-        context["cartridge_product_nos"] = filter
-        return context
+    # Paginate Cartridge Product Number
+    page = request.GET.get('page', 1)
+    paginator = Paginator(cart_prod_list_qs, 10)
+
+    try:
+        cart_prod_list_qs = paginator.page(page) 
+    except PageNotAnInteger:
+        cart_prod_list_qs = paginator.page(1)
+    except EmptyPage:
+        cart_prod_list_qs = paginator.page(paginator.num_pages)
+    
+    # returning the querysets
+    context = {
+        'cart_prod_list_qs' : cart_prod_list_qs,
+        'cart_prod_list_filter' : cart_prod_list_filter,
+    }
+    return render(request, 'cartridge/cartridge_product_no/list_cartridge_product_no.html', context)    
 
 class CartridgeProductNumberUpdateView(LoginRequiredMixin, UpdateView):
     model = CartridgeProductNumber
@@ -400,26 +371,31 @@ class CartridgeProductNumberCreateView(LoginRequiredMixin, CreateView):
     template_name = 'cartridge/cartridge_product_no/form_cartridge_product_no.html'
     success_url = reverse_lazy('list_cartridge_product_no')
 
-
 # Location Views
 
-class LocationListView(LoginRequiredMixin, ListView):
-    model = Location
-    template_name = 'item_location/list_location.html'
-    context_object_name = 'locations'
-    paginate_by = 20
+@login_required 
+def location_list_view(request):
+    location_list = Location.objects.all()
+    location_list_filter = LocationFilter(request.GET, queryset = location_list)
+    location_list_qs = location_list_filter.qs
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        filter = LocationFilter(self.request.GET, queryset)
-        return filter.qs
+    # Paginate Cartridge Product Number
+    page = request.GET.get('page', 1)
+    paginator = Paginator(location_list_qs, 10)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        queryset = self.get_queryset()
-        filter = LocationFilter(self.request.GET, queryset)
-        context["locations"] = filter
-        return context
+    try:
+        location_list_qs = paginator.page(page) 
+    except PageNotAnInteger:
+        location_list_qs = paginator.page(1)
+    except EmptyPage:
+        location_list_qs = paginator.page(paginator.num_pages)
+    
+    # returning the querysets
+    context = {
+        'location_list_qs' : location_list_qs,
+        'location_list_filter' : location_list_filter,
+    }
+    return render(request, 'item_location/list_location.html', context)   
 
 class LocationUpdateView(LoginRequiredMixin, UpdateView):
     model = Location
@@ -440,23 +416,29 @@ class LocationCreateView(LoginRequiredMixin, CreateView):
 
 # Make Views
 
-class MakeListView(LoginRequiredMixin, ListView):
-    model = Make
-    template_name = 'make/list_make.html'
-    context_object_name = 'makes'
-    paginate_by = 20
+@login_required
+def make_list_view(request):
+    make_list = Make.objects.all()
+    make_list_filter = MakeFilter(request.GET, queryset = make_list)
+    make_list_qs = make_list_filter.qs
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        filter = MakeFilter(self.request.GET, queryset)
-        return filter.qs
+    # Paginate Cartridge Product Number
+    page = request.GET.get('page', 1)
+    paginator = Paginator(make_list_qs, 2)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        queryset = self.get_queryset()
-        filter = MakeFilter(self.request.GET, queryset)
-        context["makes"] = filter
-        return context
+    try:
+        make_list_qs = paginator.page(page) 
+    except PageNotAnInteger:
+        make_list_qs = paginator.page(1)
+    except EmptyPage:
+        make_list_qs = paginator.page(paginator.num_pages)
+    
+    # returning the querysets
+    context = {
+        'make_list_qs' : make_list_qs,
+        'make_list_filter' : make_list_filter,
+    }
+    return render(request, 'make/list_make.html', context)   
 
 class MakeUpdateView(LoginRequiredMixin, UpdateView):
     model = Make
@@ -475,25 +457,29 @@ class MakeCreateView(LoginRequiredMixin, CreateView):
     template_name = "make/form_make.html"
     success_url = reverse_lazy('list_make')
 
-# Vendor Views
+@login_required
+def vendor_list_view(request) :
+    vendor_list = Vendor.objects.all()
+    vendor_list_filter = VendorFilter(request.GET, queryset = vendor_list)
+    vendor_list_qs = vendor_list_filter.qs
 
-class VendorListView(LoginRequiredMixin, ListView):
-    model = Vendor
-    template_name = 'vendor/list_vendor.html'
-    context_object_name =  'vendors'
-    paginate_by: 20
+    # Paginate Cartridge Product Number
+    page = request.GET.get('page', 1)
+    paginator = Paginator(vendor_list_qs, 10)
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        filter = VendorFilter(self.request.GET, queryset)
-        return filter.qs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        queryset = self.get_queryset()
-        filter = VendorFilter(self.request.GET, queryset)
-        context["vendors"] = filter
-        return context
+    try:
+        vendor_list_qs = paginator.page(page) 
+    except PageNotAnInteger:
+        vendor_list_qs = paginator.page(1)
+    except EmptyPage:
+        vendor_list_qs = paginator.page(paginator.num_pages)
+    
+    # returning the querysets
+    context = {
+        'vendor_list_qs' : vendor_list_qs,
+        'vendor_list_filter' : vendor_list_filter,
+    }
+    return render(request, 'vendor/list_vendor.html', context)   
 
 class VendorUpdateView(LoginRequiredMixin, UpdateView):
     model = Vendor
@@ -515,5 +501,6 @@ class VendorCreateView(LoginRequiredMixin, CreateView):
 class VendorDetailView(LoginRequiredMixin, DetailView):
     model = Vendor
     fields = '__all__'
+    context_object_name = 'vendor'
     template_name = "vendor/details_vendor.html"
     success_url = reverse_lazy('list_vendor')

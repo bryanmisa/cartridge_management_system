@@ -9,7 +9,10 @@
 
   {{ cartridge_filter.form | crispy }}
 
-  <button class="btn btn-primary" type="submit">Search</button>
+  <br>
+  <center>
+    <button class="btn btn-primary" type="submit">Search</button>
+  </center>
 
 </form>
 {{ form.media.css }}
@@ -20,22 +23,21 @@
         <th scope="col">Name</th>
         <th scope="col">Color</th>
         <th scope="col">Cartridge Type</th>
-        <th scope="col">Status</th>
-
+        <th scope="col">Number of Stocks</th>
       </tr>
     </thead>
     <tbody>
 
-        {% for cartridge in cartridges %}
+        
          
             <tr>
-              {% if cartridge.number_of_cartridges == 0 %}
+              {% for cartridge in cartridges %}
+        
                 <td scope="row">{{cartridge.name}}</td>
                 <td>{{cartridge.color}}</td>
                 <td>{{cartridge.cartridge_type}}</td>
-                <td scope="row"><div class="position-absolute rounded text-light bg-danger"> <span id="rounded-border">No Stock</span> </div></td>
-                {% endif %}
-                <td></td>
+                <td scope="row"><div class="position-absolute rounded text-light bg-danger"> <span id="rounded-border">{{cartridge.number_of_cartridges}}</span> </div></td>
+      
             </tr>
 
            
@@ -44,7 +46,7 @@
   </table>
 
   <!-- pagination pages for cartridges. this will list 10 items per page-->
-  {% if cartridge_counts.has_other_pages %}
+  {% if cartridges.has_other_pages %}
   <nav>
     <ul class="pagination justify-content-center">
       {% if cartridges.has_previous %}

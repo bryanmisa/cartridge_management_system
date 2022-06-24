@@ -48,8 +48,6 @@ class CartridgeProductNumber(Item):
     cartridge_type = models.CharField(max_length=10, 
                                       choices=CARTRIDGE_TYPE,
                                       default='')
-    class Meta:
-        ordering = ['name']
 
 class Make(Item):
     pass
