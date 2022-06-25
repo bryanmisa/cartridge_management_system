@@ -85,6 +85,8 @@ class Cartridge(Item):
     installed_date = models.DateField(blank=True, null=True)          # this field will only show when installing the 
                                                                       # cartridge
     
+    date_received = models.DateField(blank=True, null=True) # field will only show when creating the
+
     vendor = models.ForeignKey('Vendor', 
                                 on_delete=models.SET_NULL, 
                                 null=True, 
