@@ -34,7 +34,9 @@
                 <th scope="col">Color</th>
                 <th scope="col">Cartridge Type</th>
                 <th scope="col">Product Number</th>
-                <th scope="col">Status</th>
+                <th scope="col">Installed Date</th>
+                <th scope="col">Action</th>
+                
               </tr>
             </thead>
             <h4>Installed Cartridges</h4>
@@ -45,7 +47,8 @@
                 <td>{{cartridge.cart_prod_no.color}}</td>
                 <td>{{cartridge.cart_prod_no.cartridge_type}}</td>
                 <td>{{cartridge.cart_prod_no}}</td>
-                <td>{{cartridge.status}}</td>
+                <td>{{cartridge.installed_date}}</td>
+                <td> <a class="btn btn-danger" href="{% url 'dispose_cartridge' cartridge.id %}">Dispose</a></td>
               </tr>
               {% endfor %}
             </tbody>

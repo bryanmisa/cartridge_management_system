@@ -32,7 +32,7 @@
 
         {% for cartridge in cartridges %}
             <tr>
-                <th scope="row">{{cartridge.name}}</th>
+                <th scope="row"><a href="{% url 'install_cartridge' cartridge.id %}">{{cartridge.name}}</a></th>
                 <td>{{cartridge.status}}</td>
                 <td>{{cartridge.printer.name}}</td>
                 <td>{{cartridge.printer_model}}</td>

@@ -6,11 +6,9 @@ from django.db import models
 
 # Create your models here.
 
-
-
 class Item(models.Model):                                               # Base or Parent Class for CMS models 
     name = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)        
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -19,17 +17,31 @@ class Item(models.Model):                                               # Base o
     class Meta:
         abstract = True
 
+
+
+
+
 class Location(Item):
+    # Location class will determin the location of the Item Created
     pass
     class Meta:
         ordering = ['name']
 
+
+
+
 class PrinterModel(Item):
+    # The PrinterModel will be used to link the Cartridge and the Printer.
     pass
     class Meta:
         ordering = ['-updated_at']
-    
-class CartridgeProductNumber(Item):                 
+
+
+
+class CartridgeProductNumber(Item):  
+
+    # CartridgeProductNumber will be the base to count 
+    # how many cartridges that is linked on to the CartridgeProductNumber.
 
     CARTRIDGE_TYPE = (                          # Type of Cartridges
         ('Ink', 'Ink'),
@@ -51,12 +63,13 @@ class CartridgeProductNumber(Item):
                                       default='')
 
 class Make(Item):
+    # Make or the Manufacturer of the Item
     pass
     class Meta:
         ordering = ['-updated_at']
 
 class Cartridge(Item):
-
+    # Cartridge Model will hold the important values as the below 
     STATUS_CHOICES = (
         ('In Stock', 'In Stock'),
         ('Installed' , 'Installed'),
@@ -81,9 +94,9 @@ class Cartridge(Item):
                                     blank=True, null=True)
 
                                 
-    cart_prod_no = models.ForeignKey('CartridgeProductNumber',          
-                                     on_delete=models.SET_DEFAULT, 
-                                     null=True, 
+    cart_prod_no = models.ForeignKey('CartridgeProductNumber',       # this is to be linked with CatridgeProductNumber to 
+                                     on_delete=models.SET_DEFAULT,   # get the query on how many cartridges are there
+                                     null=True,                      # under the assigned CartridgeProductNumber
                                      blank=True,
                                      default='', related_name='cart_prod_no')
 
@@ -94,8 +107,8 @@ class Cartridge(Item):
 
     date_disposed = models.DateField(blank=True, null=True)           # field will only show when disposing the the model
 
-    vendor = models.ForeignKey('Vendor', 
-                                on_delete=models.SET_NULL, 
+    vendor = models.ForeignKey('Vendor',                              # Vendor will provide the information where to order 
+                                on_delete=models.SET_NULL,            # the cartridges
                                 null=True, 
                                 blank=True)
     
@@ -105,24 +118,29 @@ class Cartridge(Item):
 class Printer(Item):
     
 
-    asset_tag = models.CharField(max_length=100, 
+    asset_tag = models.CharField(max_length=100,                    # this will provide the Asset tag of the printer
                                 blank=True, 
                                 unique=True)
-    serial_number = models.CharField(max_length=100, 
-                                    blank=True, 
+
+    serial_number = models.CharField(max_length=100,                # to get the correct info of the printer that can be provided 
+                                    blank=True,                     # to the vendor
                                     unique=True)
-    location = models.ForeignKey('Location', 
+                                    
+    location = models.ForeignKey('Location',                        # to know the location of the printer          
                                  on_delete=models.SET_NULL, 
                                  null=True, 
                                  blank=True)
-    printer_model = models.ForeignKey('PrinterModel', 
-                                      on_delete=models.SET_NULL, 
-                                      null=True, blank=True)
-    make = models.ForeignKey('Make', 
+
+    printer_model = models.ForeignKey('PrinterModel',               # this foreignkey will link to the PrinterModel, so that
+                                      on_delete=models.SET_NULL,    # the cartridges assigned on the same PrinterModel can provide
+                                      null=True, blank=True)        # the querysets against the cartrigdes assigned on the Printer.
+
+    make = models.ForeignKey('Make',                                # Manufacturer or Make
                             on_delete=models.SET_NULL, 
                             null=True, 
                             blank=True)
-    vendor = models.ForeignKey('Vendor', 
+
+    vendor = models.ForeignKey('Vendor',                            # Details of the Printer Provider.
                             on_delete=models.SET_NULL, 
                             null=True, 
                             blank=True)
@@ -130,7 +148,7 @@ class Printer(Item):
     class Meta:
         ordering = ['-updated_at']
 
-class Vendor(models.Model):
+class Vendor(models.Model):                                         # Vendor Details
 
     company_name = models.CharField(max_length=100, 
                                 blank=True, 

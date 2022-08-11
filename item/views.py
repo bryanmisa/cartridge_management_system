@@ -1,12 +1,8 @@
-from itertools import count
 from msilib.schema import ListView
-from django import views
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db import transaction
 from django.db.models import Count, Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.views.generic import (View,
                                   ListView,
@@ -15,20 +11,22 @@ from django.views.generic import (View,
                                   CreateView,
                                   DetailView,)
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
-
-from django.urls import reverse_lazy
-from item.models import *
-from item.forms import *
-from item.filters import *
+from django.urls import reverse_lazy 
+from item.models import *           # import all created item models
+from item.forms import *            # import all created forms
+from item.filters import *          # import all created filters
 
 # Home Page View
+# The hime page view will act as a dashboard to show
+# how many cartridges are less than three and cartridges that is already depleted (0)
+
 @login_required
 def dashboard(request):
-    cartridges = CartridgeProductNumber.objects.annotate(number_of_cartridges = 
-                                                        Count('cart_prod_no',
-                                                        filter=Q(cart_prod_no__status='In Stock'),distinct=True)
-                                                        ).order_by('updated_at')[:11]
+
+    cartridges = CartridgeProductNumber.objects.annotate(number_of_cartridges =                                     # the objects.annotate was created to produce querysets
+                                                        Count('cart_prod_no',                                       # to count how many cartridges that is in stock.
+                                                        filter=Q(cart_prod_no__status='In Stock'),distinct=True)    # on webpage an if/else statement is to determine if cartridges is less than 3
+                                                        ).order_by('updated_at')[:11]                               # or the cartridges has 0 left
     #Paginate List of Stocks, 
     page = request.GET.get('page', 1)
     paginator = Paginator(cartridges, 10)
@@ -40,19 +38,22 @@ def dashboard(request):
     except EmptyPage:
         cartridges = paginator.page(paginator.num_pages)
 
+    # returning the querysets
     context = {
         'cartridges' : cartridges,
     }
     
-    return render(request, 'dashboard.html', context)
+    return render(request, 'dashboard.html', context)       
 
 @login_required
 def list_of_out_of_stock_cartridges(request):
 
-    cartridges = CartridgeProductNumber.objects.annotate(number_of_cartridges = 
-                                                        Count('cart_prod_no',
+    cartridges = CartridgeProductNumber.objects.annotate(number_of_cartridges =                      # a querysets to get all the cartridges model (cart_prod_no) count linked
+                                                        Count('cart_prod_no',                        # to the CartridgeProductNumber
                                                         filter=Q(cart_prod_no__status='In Stock'))).order_by('number_of_cartridges')
-    cartridge_filter = CartridgeProductNumberFilter(request.GET, queryset = cartridges)
+
+    cartridge_filter = CartridgeProductNumberFilter(request.GET, queryset = cartridges)             # cartridge_filter is used to return 
+
     cartridges = cartridge_filter.qs
 
     #Paginate List of Stocks, 
@@ -75,10 +76,11 @@ def list_of_out_of_stock_cartridges(request):
     return render(request, 'cartridge/cartridge_list_of_stock_cartridges.html', context)
 
 #### Printer Model Views
+
 @login_required
 def printer_list(request):
     printers = Printer.objects.all()
-    printer_filter = PrinterFilter(request.GET, queryset = printers)
+    printer_filter = PrinterFilter(request.GET, queryset = printers)        # printer_filter is used for searching a specific sets of printers
     printers = printer_filter.qs
 
     page = request.GET.get('page', 1)
@@ -91,6 +93,7 @@ def printer_list(request):
     except EmptyPage:
         printers = paginator.page(paginator.num_pages)
 
+
     context = {
         'printers' : printers,
         'printer_filter' : printer_filter,
@@ -101,7 +104,7 @@ def printer_list(request):
 @login_required
 def printer_details(request, id):
     printer_detail = Printer.objects.get(id = id)
-    cartridges = Cartridge.objects.filter(printer = printer_detail.id)
+    cartridges = Cartridge.objects.filter(printer = printer_detail.id, status="Installed")
     context = {
         'printer_detail' : printer_detail,
         'cartridges' : cartridges,
@@ -270,7 +273,6 @@ def dispose_cartridge(request, id):
     context = {
         'form' : form,
     }
-
     return render(request, 'cartridge/cartridge_dispose_form.html', context)
 
 @login_required

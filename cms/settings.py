@@ -33,12 +33,12 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     
     # App
-    'item.apps.ItemConfig',
+    'item.apps.ItemConfig', # itemApp
 
     # 3rd Party Modules
     'crispy_forms',
     'crispy_bootstrap5',
-    'django_select2',
+    'django_select2', # this used to query all models of the foreign keys
     'django_tables2',
     'django_htmx',
 

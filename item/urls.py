@@ -22,8 +22,8 @@ urlpatterns = [
     path("select2/", include("django_select2.urls")),
 
     # Printer URLS
-    path('printer/list/', views.printer_list, name='printer_list'),
-    path('printer/details/<int:id>', views.printer_details, name='printer_details'),
+    path('printer/list/', views.printer_list, name='printer_list'),                            
+    path('printer/details/<int:id>', views.printer_details, name='printer_details'),            
     path('printer/create', views.printer_create, name='printer_create'),
     path('printer/update/<int:id>', views.printer_update, name='printer_update'),
     path('printer/delete/<int:pk>', PrinterDeleteView.as_view(), name='delete_printer'),
