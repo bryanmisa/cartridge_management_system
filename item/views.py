@@ -2,6 +2,7 @@ from itertools import count
 from msilib.schema import ListView
 from django import views
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db import transaction
 from django.db.models import Count, Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import login, authenticate
@@ -75,8 +76,8 @@ def list_of_out_of_stock_cartridges(request):
 
 #### Printer Model Views
 @login_required
-def printer_list_instock(request):
-    printers = Printer.objects.all().filter(status='In Stock')
+def printer_list(request):
+    printers = Printer.objects.all()
     printer_filter = PrinterFilter(request.GET, queryset = printers)
     printers = printer_filter.qs
 
@@ -96,26 +97,6 @@ def printer_list_instock(request):
     }
     return render(request, 'printer/printer_list.html', context)
 
-@login_required
-def printer_list_deployed(request):
-    printers = Printer.objects.all().filter(status='Deployed')
-    printer_filter = PrinterFilter(request.GET, queryset = printers)
-    printers = printer_filter.qs
-    page = request.GET.get('page', 1)
-    paginator = Paginator(printers, 10)
-
-    try:
-        printers = paginator.page(page)
-    except PageNotAnInteger:
-        printers = paginator.page(1)
-    except EmptyPage:
-        printers = paginator.page(paginator.num_pages)
-    
-    context = {
-        'printers' : printers,
-        'printer_filter' : printer_filter,
-    }
-    return render(request, 'printer/printer_list.html', context)
 
 @login_required
 def printer_details(request, id):
@@ -134,7 +115,7 @@ def printer_create(request):
     if request.method == "POST":
         if form.is_valid():
             form.save()
-            return redirect('printer_list_instock')
+            return redirect('printer_list')
     context['form'] = form
     return render(request, 'printer/printer_form.html', context)
 
@@ -154,24 +135,10 @@ def printer_update(request, id):
 
     return render(request, 'printer/printer_form.html', context)
 
-@login_required
-def deploy_printer(request, id):
-
-    data = get_object_or_404(Printer, pk = id)
-    form = DeployPrinterForm(instance=data)
-
-    if request.method == "POST":
-        form = DeployPrinterForm(request.POST, instance=data)
-        if form.is_valid():
-            data.status = 'Deployed'
-            form.save()
-            return redirect('printer_list_deployed')
-            
-    context = {
-        'form' : form,
-    }
-
-    return render(request, 'printer/printer_form.html', context)
+class PrinterDeleteView(LoginRequiredMixin, DeleteView):
+    model = Printer
+    template_name = 'printer/delete_printer.html'
+    success_url = reverse_lazy('printer_list')
 
 # Printer Model Views
 
@@ -287,18 +254,24 @@ def cartridge_update(request, id):
 
     return render(request, 'cartridge/cartridge_create_form.html', context) # render querysets on the HTML
 
-class CartridgeCreateView(LoginRequiredMixin, CreateView):
-    model = Cartridge
-    form_class = CartridgeForm
-    template_name = 'cartridge/cartridge_create_form.html'
-    success_url = reverse_lazy('cartridge_list_instock')
-
 @login_required
-def copy_cartridge(request, id):
-    copy_cartridge= get_object_or_404(Cartridge, pk = id)
-    copy_cartridge.pk=None
-    copy_cartridge.save()
-    return redirect('cartridge_list_instock')
+def dispose_cartridge(request, id):
+
+    data = get_object_or_404(Cartridge, pk = id)
+    form = DisposeCartridgeForm(instance=data)
+
+    if request.method == "POST":
+        form = DisposeCartridgeForm(request.POST, instance=data)
+        if form.is_valid():
+            data.status = 'Disposed'
+            form.save()
+            return redirect('cartridge_list_installed')
+            
+    context = {
+        'form' : form,
+    }
+
+    return render(request, 'cartridge/cartridge_dispose_form.html', context)
 
 @login_required
 def install_cartridge(request, id):
@@ -319,6 +292,31 @@ def install_cartridge(request, id):
     }
 
     return render(request, 'cartridge/cartridge_install_form.html', context)
+
+@login_required
+def cartridge_create(request):
+    context = {}
+    form = CartridgeForm(request.POST or None)
+   
+    if request.method == "POST":
+
+        if form.is_valid():
+            form = form.save(commit=False)
+
+            form.save()
+            return redirect('cartridge_list_instock')
+    context['form'] = form
+
+    return render(request, 'cartridge/cartridge_create_form.html', context)
+
+@login_required
+def copy_cartridge(request, id):
+    copy_cartridge= get_object_or_404(Cartridge, pk = id)
+    copy_cartridge.pk=None
+    copy_cartridge.save()
+    return redirect('cartridge_list_instock')
+
+
 
 class CartridgeDetailView(LoginRequiredMixin, DetailView):
     model = Cartridge
@@ -424,7 +422,7 @@ def make_list_view(request):
 
     # Paginate Cartridge Product Number
     page = request.GET.get('page', 1)
-    paginator = Paginator(make_list_qs, 2)
+    paginator = Paginator(make_list_qs, 10)
 
     try:
         make_list_qs = paginator.page(page) 

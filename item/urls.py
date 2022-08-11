@@ -22,19 +22,20 @@ urlpatterns = [
     path("select2/", include("django_select2.urls")),
 
     # Printer URLS
-    path('printer/list/instock/', views.printer_list_instock, name='printer_list_instock'),
-    path('printer/list/deployed', views.printer_list_deployed, name='printer_list_deployed'),
+    path('printer/list/', views.printer_list, name='printer_list'),
     path('printer/details/<int:id>', views.printer_details, name='printer_details'),
     path('printer/create', views.printer_create, name='printer_create'),
     path('printer/update/<int:id>', views.printer_update, name='printer_update'),
-    path('printer/deploy/<int:id>', views.deploy_printer, name='deploy_printer'),
+    path('printer/delete/<int:pk>', PrinterDeleteView.as_view(), name='delete_printer'),
+
     
     # Cartridge URLS
     path('cartridge/list/instock', views.cartridge_list_instock, name='cartridge_list_instock'),
     path('cartridge/list/installed', views.cartridge_list_installed, name='cartridge_list_installed'),
     path('cartridge/list/stocks/outofstock', views.list_of_out_of_stock_cartridges, name='list_of_out_of_stock_cartridges'),
     path('cartridge/update/<int:id>', views.cartridge_update, name='cartridge_update'),
-    path('cartridge/create', CartridgeCreateView.as_view(), name='cartridge_create'),
+    path('cartridge/dispose/<str:id>', views.dispose_cartridge, name='dispose_cartridge'),
+    path('cartridge/create', views.cartridge_create, name='cartridge_create'),
     path('cartridge/install/<str:id>', views.install_cartridge, name='install_cartridge'),
     path('cartridge/copy/<str:id>', views.copy_cartridge, name='copy_cartridge'),
     path('catridge/details/<int:pk>', CartridgeDetailView.as_view(), name='cartridge_details'),

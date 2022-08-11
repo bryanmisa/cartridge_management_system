@@ -22,11 +22,7 @@
       <tr>
         <th scope="col">Name</th>
         <th scope="col">Location</th>
-        <th scope="col">Model</th>
-        <th scope="col">Asset Tag</th>
         <th scope="col">Serial Number</th>
-        <th scope="col">Make</th>
-        <th scope="col">Owned by</th>
         <th scope="col">Action</th>
       </tr>
     </thead>
@@ -37,22 +33,16 @@
             <tr>
                 <th scope="row"> <a href="{% url 'printer_details' printer.id %}"> {{printer.name}}</a></th>
                 <td>{{printer.location}}</td>
-                <td>{{printer.printer_model}}</td>
-                <td>{{printer.asset_tag}}</td>
                 <td>{{printer.serial_number}}</td>
-                <td>{{printer.make}}</td>
-                <td>{{printer.owned_by}}</td>
                 <td>
-                  {% if printer.status == "In Stock" %}
-                  <a href="{% url 'deploy_printer' printer.id %} "><button type="button" class="btn btn-danger">Deploy</button></a>
-                  {% endif %}
-                  <a href="{% url 'printer_update' printer.id %}"> <button type="button" class="btn btn-info">Update Details</button> </a>
+                  <a class="btn btn-info" href="{% url 'printer_update' printer.id %}"> Update </a> 
+                  <a class="btn btn-danger" href="{% url 'delete_printer' printer.id %}"> Delete </a>
                 </td> 
                
             </tr>
         {% endfor %}
     </tbody>
-  </table>
+  </table>  
 <!-- Printer Pagination | Displays 10 printers per page-->
   {% if printers.has_other_pages %}
   <nav>

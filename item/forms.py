@@ -43,7 +43,7 @@ class PrinterForm(forms.ModelForm):
     class Meta:
 
         model = Printer
-        fields = ['name', 'asset_tag', 'serial_number', 'owned_by', 'location', 'printer_model', 'make', 'vendor']
+        fields = ['name', 'asset_tag', 'serial_number', 'location', 'printer_model', 'make', 'vendor']
         labels = {
             'name': 'Printer',
             'asset_tag' : 'Asset Tag',  
@@ -56,41 +56,26 @@ class PrinterForm(forms.ModelForm):
         
         widgets = {
             'name' : forms.TextInput(attrs={'class':'form-control'}),
-            'status' : forms.Select(attrs={'class':'form-control'}),
             'asset_tag' : forms.TextInput(attrs={'class':'form-control'}),
             'serial_number' : forms.TextInput(attrs={'class':'form-control'}),
-            'owned_by' : forms.Select(attrs={'class':'form-control'}),
             'location' : LocationWidget(attrs={'class':'form-control'}),
             'printer_model' : PrinterModelWidget(attrs={'class':'form-control'}),
             'make': MakeWidget(attrs={'class':'form-control',}),
             'vendor' : VendorWidget(attrs={'class':'form-control',}),
         }
         
-class DeployPrinterForm(forms.ModelForm):
-    class Meta:
-        model = Printer
-        fields = ['location', 'installed_date']
-        labels = {
-                'location' : 'Set the Location of the Printer',
-                'installed_date' : 'Deployed Date'
-            }
-        widgets = {
-            'location' : LocationWidget(attrs={'class':'form-control'}),
-            'installed_date' : DatePickerInput(attrs={'class':'form-control'}),
-        }
-
 class CartridgeForm(forms.ModelForm):
-    
 
     class Meta:
 
         model = Cartridge
-        fields = ['name', 'printer_model' ,'cart_prod_no', 'make', 'vendor',]
+        fields = ['name', 'printer_model' ,'cart_prod_no', 'make', 'date_received' , 'vendor',]
         widgets = {
             'name' : forms.TextInput(attrs={'class':'form-control'}),
             'printer_model' : PrinterModelWidget(attrs={'class':'form-control'}),
             'cart_prod_no' : CartridgeProductNoWidget(attrs={'class':'form-control'}),
             'make' : MakeWidget(attrs={'class':'form-control'}),
+            'date_received' : DatePickerInput(attrs={'class':'form-control'}),
             'vendor' : VendorWidget(attrs={'class':'form-control',}),
         }
         
@@ -106,6 +91,17 @@ class InstallCartridgeForm(forms.ModelForm):
             'installed_date' : DatePickerInput(attrs={'class':'form-control'}),
         }
 
+class DisposeCartridgeForm(forms.ModelForm):
+    
+    class Meta:
+
+        model = Cartridge
+        fields = ['date_disposed']
+
+        widgets = {
+            'date_disposed' : DatePickerInput(attrs={'class':'form-control'}),
+        }
+    
 class UserLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(UserLoginForm, self).__init__(*args, **kwargs)

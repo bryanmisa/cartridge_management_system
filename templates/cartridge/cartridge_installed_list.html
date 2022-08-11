@@ -38,7 +38,7 @@
                 <td>{{cartridge.printer_model}}</td>
                 <td>{{cartridge.cart_prod_no}}</td>
                 <td>{{cartridge.installed_date}}</td>
-                <td><a class="btn btn-warning" href="">Dispose</a></td>
+                <td><a class="btn btn-warning" href="{% url 'dispose_cartridge' cartridge.id %}">Dispose</a></td>
             </tr>
         {% endfor %}
     </tbody>

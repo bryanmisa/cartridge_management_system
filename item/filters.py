@@ -50,9 +50,9 @@ class PrinterFilter(django_filters.FilterSet):
     printer_model = django_filters.CharFilter(lookup_expr='icontains',field_name='printer_model__name',label='Printer Model')
     asset_tag = django_filters.CharFilter(lookup_expr='icontains',field_name='asset_tag__name',label='Asset')
     location = django_filters.CharFilter(lookup_expr='icontains',field_name='location__name',label='Location')
-    start_date = DateFilter(field_name ='installed_date',lookup_expr=('gt'),widget=DatePickerInput({'type': 'date'})) 
-    end_date = DateFilter(field_name='installed_date',lookup_expr=('lt'),widget=DatePickerInput({'type': 'date'}))
-    date_range = DateRangeFilter(field_name='installed_date',widget=DatePickerInput({'type': 'date'}))
+    # start_date = DateFilter(field_name ='installed_date',lookup_expr=('gt'),widget=DatePickerInput({'type': 'date'})) 
+    # end_date = DateFilter(field_name='installed_date',lookup_expr=('lt'),widget=DatePickerInput({'type': 'date'}))
+    # date_range = DateRangeFilter(field_name='installed_date',widget=DatePickerInput({'type': 'date'}))
 
     class Meta :
         model = Printer
@@ -74,7 +74,7 @@ class MakeFilter(django_filters.FilterSet):
      fields = ['name']
 
 class VendorFilter(django_filters.FilterSet):
-     name = django_filters.CharFilter(lookup_expr='icontains',label='Name')
+     company_name = django_filters.CharFilter(lookup_expr='icontains',label='Name')
      model = Vendor
      fields = ['company_name']
 

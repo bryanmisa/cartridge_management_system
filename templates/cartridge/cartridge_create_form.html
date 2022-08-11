@@ -10,11 +10,8 @@
     
     <form action="" method="post">
         {% csrf_token %}
-          {{form.as_p}}
-        <br>
-        <input class="btn btn-primary" type="submit" value="Submit">
-
-
+          {{form.as_p}} 
+        <center><input class="btn btn-primary" type="submit" value="Submit"></center>
     </form>
 
     <script src="{% static 'jquery/jquery.min.js' %}"></script>
